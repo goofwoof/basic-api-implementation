@@ -133,8 +133,10 @@ class RsListApplicationTests {
     void T7_delete_event() throws Exception {
         mockMvc.perform(delete("/rs/delete/1"))
                 .andExpect(status().isOk())
+                //此处是单个执行的结果
                 //.andExpect(jsonPath("$.eventName").value("第一条事件"))
                 //.andExpect(jsonPath("$.keyWord").value("无标签"));
+                //此处是全部执行的结果
                 .andExpect(jsonPath("$.eventName").value("特朗普辞职了"))
                 .andExpect(jsonPath("$.keyWord").value("时政"));
     }
