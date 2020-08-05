@@ -39,10 +39,11 @@ public class RsController {
   }
 
   @PutMapping("/rs/add")
-  public void addEvent(@RequestBody @Valid RsEvent rsEvent){
+  public ResponseEntity addEvent(@RequestBody @Valid RsEvent rsEvent){
     HandleErrorOfAutowired();
     rsList.add(rsEvent);
     putUserToUserList(rsEvent.getUser());
+    return ResponseEntity.ok().build();
   }
 
 
@@ -65,9 +66,9 @@ public class RsController {
   }
 
   @DeleteMapping("rs/delete/{index}")
-  public RsEvent deleteEvent(@PathVariable int index){
+  public ResponseEntity deleteEvent(@PathVariable int index){
     HandleErrorOfAutowired();
-    return rsList.remove(index - 1);
+    return ResponseEntity.ok(rsList.remove(index - 1));
   }
 
 

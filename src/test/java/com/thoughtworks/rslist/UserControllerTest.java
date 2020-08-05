@@ -28,7 +28,7 @@ class UserControllerTest {
         User user = new User("lili", "male", 19, "a@a.com", "15029931111");
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
 
