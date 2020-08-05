@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
@@ -23,6 +24,7 @@ public class User {
     private int voteNum = 10;
     private boolean initFunc = true;
 
+    //@JsonIgnore
     public boolean isInitFunc() {
         return initFunc;
     }

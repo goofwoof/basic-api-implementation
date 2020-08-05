@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.stereotype.Component;
 
+import javax.validation.Valid;
+
 @Component
 public class RsEvent extends RsEventPrototype {
 
     @JsonIgnore
+    @Valid
     public User getUser() {
         return super.getUser();
     }
@@ -23,21 +26,5 @@ public class RsEvent extends RsEventPrototype {
 
     public RsEvent() {
         super();
-    }
-
-    public String getEventName() {
-        return super.getEventName();
-    }
-
-    public void setEventName(String eventName) {
-        super.setEventName(eventName);
-    }
-
-    public String getKeyWord() {
-        return super.getKeyWord();
-    }
-
-    public void setKeyWord(String keyWord) {
-        super.setKeyWord(keyWord);
     }
 }

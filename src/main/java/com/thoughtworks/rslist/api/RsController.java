@@ -15,26 +15,12 @@ public class RsController {
   @Autowired
   private List<User> userList;
   @Autowired
-  private List<RsEvent> rsList; //= initalRsEvent();
+  private List<RsEvent> rsList;
 
   private void HandleErrorOfAutowired(){
     userList = userList.stream().filter(User::isInitFunc).collect(Collectors.toList());
     rsList = rsList.stream().filter(RsEvent::isInitFunc).collect(Collectors.toList());
   }
-
-  /*private List<RsEvent> initalRsEvent() {
-    List<RsEvent> rsList = new ArrayList<>();
-    User user1 = new User("lili1", "male", 19, "a@a.com", "15029931111");
-    User user2 = new User("lili2", "famale", 29, "a@a.com", "15029931111");
-    User user3 = new User("lili3", "male", 40, "a@a.com", "15029931111");
-    userList.add(user1);
-    userList.add(user2);
-    userList.add(user3);
-    rsList.add(new RsEvent("第一条事件", "无标签", user1));
-    rsList.add(new RsEvent("第二条事件", "无标签", user2));
-    rsList.add(new RsEvent("第三条事件", "无标签", user3));
-    return rsList;
-  }*/
 
   @GetMapping("/rs/list")
   public ResponseEntity getStringOfreList(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
@@ -61,7 +47,7 @@ public class RsController {
 
 
   private void putUserToUserList(User user){
-    if(userList.stream().filter(oneUser-> oneUser.getUserName().equals(user.getUserName())).count() != 0){
+    if(userList.stream().filter(oneUser-> oneUser.getUserName().equals(user.getUserName())).count() == 0){
       userList.add(user);
     }
   }
