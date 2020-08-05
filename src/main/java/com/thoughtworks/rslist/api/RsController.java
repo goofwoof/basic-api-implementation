@@ -40,9 +40,14 @@ public class RsController {
 
 
   @GetMapping("/rs/{index}")
-  public ResponseEntity getStringOfSelectedList(@PathVariable int index){
+  public ResponseEntity getStringOfSelectedList(@PathVariable int index) throws ErrorIndexException {
     HandleErrorOfAutowired();
-    return ResponseEntity.ok(this.rsList.get(index - 1));
+    try {
+      return ResponseEntity.ok(this.rsList.get(index - 1));
+    }catch (Exception e){
+      throw new ErrorIndexException();
+    }
+
   }
 
   @PostMapping("/rs/add")

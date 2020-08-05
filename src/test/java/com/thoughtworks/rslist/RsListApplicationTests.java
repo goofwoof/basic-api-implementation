@@ -92,6 +92,9 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$.eventName").value("第一条事件"))
                 .andExpect(jsonPath("$.keyWord").value("无标签"))
                 .andExpect(jsonPath("$", not(hasKey("userName"))));
+        mockMvc.perform(get("/rs/10"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid index")));
     }
     
     @Test
