@@ -2,6 +2,7 @@ package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -62,7 +63,7 @@ class RsListApplicationTests {
     @Test
     @Order(4)
     void T4_add_event() throws Exception {
-        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("猪肉涨价了", "经济"));
+        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("猪肉涨价了", "经济", new User("lili1", "male", 19, "a@a.com", "15029931111")));
         mockMvc.perform(put("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list"))

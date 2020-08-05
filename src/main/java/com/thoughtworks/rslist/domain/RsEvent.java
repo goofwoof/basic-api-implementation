@@ -3,11 +3,20 @@ package com.thoughtworks.rslist.domain;
 public class RsEvent {
     private String eventName;
     private String keyWord;
+    private User user;
 
+    public User getUser() {
+        return user;
+    }
 
-    public RsEvent(String eventName, String keyWord) {
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public RsEvent(String eventName, String keyWord, User user) {
         this.eventName = eventName;
         this.keyWord = keyWord;
+        this.user = user;
     }
 
     public String getEventName() {

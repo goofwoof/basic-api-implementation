@@ -2,9 +2,11 @@ package com.thoughtworks.rslist.domain;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.jca.cci.CannotGetCciConnectionException;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
 
+@Component
 public class User {
     @NotNull
     @Size(max = 8, min = 1)
