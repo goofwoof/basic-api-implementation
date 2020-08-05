@@ -13,8 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -64,7 +63,7 @@ class RsListApplicationTests {
     @Order(4)
     void T4_add_event() throws Exception {
         String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("猪肉涨价了", "经济"));
-        mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
+        mockMvc.perform(put("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
@@ -84,9 +83,8 @@ class RsListApplicationTests {
     }
 
     @Test
-    @Ignore
     void T6_delete_event() throws Exception {
-        mockMvc.perform(get("/rs/delete/1"))
+        mockMvc.perform(delete("/rs/delete/1"))
                 .andExpect(status().isOk())
                 //.andExpect(jsonPath("$.eventName").value("第一条事件"))
                 //.andExpect(jsonPath("$.keyWord").value("无标签"));

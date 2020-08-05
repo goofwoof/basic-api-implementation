@@ -33,7 +33,7 @@ public class RsController {
     return this.rsList.get(index - 1);
   }
 
-  @PostMapping("/rs/add")
+  @PutMapping("/rs/add")
   public void addEvent(@RequestBody RsEvent rsEvent){
     rsList.add(rsEvent);
   }
@@ -49,7 +49,7 @@ public class RsController {
     return rsList.get(index-1);
   }
 
-  @GetMapping("rs/delete/{index}")
+  @DeleteMapping("rs/delete/{index}")
   public RsEvent deleteEvent(@PathVariable int index){
       return rsList.remove(index - 1);
   }
