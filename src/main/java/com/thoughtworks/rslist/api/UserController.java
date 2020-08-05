@@ -30,6 +30,6 @@ public class UserController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.setPropertyNamingStrategy(com.fasterxml.jackson.databind.PropertyNamingStrategy.SNAKE_CASE);
         String json = mapper.writeValueAsString(userList);
-        return ResponseEntity.ok(userList);
+        return ResponseEntity.ok(json);
     }
 }
