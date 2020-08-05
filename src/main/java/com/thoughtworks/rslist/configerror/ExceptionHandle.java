@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 
 @ControllerAdvice
@@ -20,7 +22,7 @@ public class ExceptionHandle{
     public ResponseEntity handlerInputException(Exception e) {
         Error er = new Error();
         if(e instanceof MethodArgumentNotValidException){
-            er.setError("invalid param");
+            er.setError(selectSource());
         }
         else{
             er.setError(e.getMessage());
@@ -28,6 +30,17 @@ public class ExceptionHandle{
         LOGGER.error(e.getMessage());
         //.header("error", er.getError())
         return ResponseEntity.badRequest().body(er);
+    }
+
+    private String selectSource() {
+       String path = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getPathInfo();
+        switch (path){
+            case "/user":
+                return "invalid user";
+            case "/rs/add":
+                return "invalid param";
+        }
+        return path;
     }
 
 }
