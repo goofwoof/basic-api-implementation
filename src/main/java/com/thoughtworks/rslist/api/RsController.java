@@ -2,6 +2,8 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.ErrorIndexException;
+import com.thoughtworks.rslist.exception.ErrorInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,12 @@ public class RsController {
   public ResponseEntity getStringOfreList(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
     HandleErrorOfAutowired();
     if(start != null || end != null){
-      return ResponseEntity.ok(rsList.subList(start - 1, end));
+      try{
+        return ResponseEntity.ok(rsList.subList(start - 1, end));
+      }catch(IndexOutOfBoundsException e){
+        throw new ErrorInputException();
+      }
+
     }
     return ResponseEntity.ok(rsList);
   }

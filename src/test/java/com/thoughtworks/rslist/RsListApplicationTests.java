@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasKey;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -102,6 +103,10 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[0].keyWord").value("无标签"))
                 .andExpect(jsonPath("$[1].eventName").value("第二条事件"))
                 .andExpect(jsonPath("$[1].keyWord").value("无标签"));
+
+        mockMvc.perform(get("/rs/list?start=10&end=20"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid request param")));
     }
     
     
