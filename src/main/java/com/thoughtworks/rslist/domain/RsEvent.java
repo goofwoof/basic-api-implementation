@@ -1,37 +1,43 @@
 package com.thoughtworks.rslist.domain;
 
-public class RsEvent {
-    private String eventName;
-    private String keyWord;
-    private User user;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.stereotype.Component;
 
+@Component
+public class RsEvent extends RsEventPrototype {
+
+    @JsonIgnore
     public User getUser() {
-        return user;
+        return super.getUser();
     }
 
+    @JsonProperty
     public void setUser(User user) {
-        this.user = user;
+        super.setUser(user);
     }
 
     public RsEvent(String eventName, String keyWord, User user) {
-        this.eventName = eventName;
-        this.keyWord = keyWord;
-        this.user = user;
+        super(eventName, keyWord, user);
+    }
+
+    public RsEvent() {
+        super();
     }
 
     public String getEventName() {
-        return eventName;
+        return super.getEventName();
     }
 
     public void setEventName(String eventName) {
-        this.eventName = eventName;
+        super.setEventName(eventName);
     }
 
     public String getKeyWord() {
-        return keyWord;
+        return super.getKeyWord();
     }
 
     public void setKeyWord(String keyWord) {
-        this.keyWord = keyWord;
+        super.setKeyWord(keyWord);
     }
 }
