@@ -10,7 +10,6 @@ import javax.validation.Valid;
 public class RsEvent extends RsEventPrototype {
 
     @JsonIgnore
-    @Valid
     public User getUser() {
         return super.getUser();
     }

@@ -31,7 +31,8 @@ class RsListApplicationTests {
     void T0_shoud_return_bad_request_when_add_give_null_param() throws Exception {
         String jsonParam = new ObjectMapper().writeValueAsString(new RsEventPrototype(null, "无标签", new User("lili1", "male", 19, "a@a.com", "15029931111")));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("invalid param")));
         jsonParam = new ObjectMapper().writeValueAsString(new RsEventPrototype("第二条事件", null, new User("lili1", "male", 19, "a@a.com", "15029931111")));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());

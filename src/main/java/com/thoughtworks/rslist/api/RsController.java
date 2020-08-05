@@ -40,7 +40,7 @@ public class RsController {
 
 
   @GetMapping("/rs/{index}")
-  public ResponseEntity getStringOfSelectedList(@PathVariable int index) throws ErrorIndexException {
+  public ResponseEntity getStringOfSelectedList(@PathVariable int index){
     HandleErrorOfAutowired();
     try {
       return ResponseEntity.ok(this.rsList.get(index - 1));
