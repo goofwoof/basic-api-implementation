@@ -108,7 +108,7 @@ class RsListApplicationTests {
     
     @Test
     @Order(5)
-    void T6_add_event() throws Exception {
+    void T5_add_event() throws Exception {
         String jsonParam = new ObjectMapper().writeValueAsString(new RsEventPrototype("猪肉涨价了", "经济", new User("lili1", "male", 19, "a@a.com", "15029931111")));
         mockMvc.perform(put("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isOk());
@@ -124,12 +124,13 @@ class RsListApplicationTests {
                 .param("eventName", "特朗普辞职了")
                 .param("keyWord", "时政")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.eventName").value("特朗普辞职了"))
                 .andExpect(jsonPath("$.keyWord").value("时政"));
     }
 
     @Test
+    @Order(7)
     void T7_delete_event() throws Exception {
         mockMvc.perform(delete("/rs/delete/1"))
                 .andExpect(status().isOk())

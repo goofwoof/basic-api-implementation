@@ -53,7 +53,7 @@ public class RsController {
   }
 
   @PostMapping("rs/change/{index}")
-  public RsEvent changeEvent(@PathVariable int index, @RequestParam(required = false) String eventName, @RequestParam(required = false) String keyWord){
+  public ResponseEntity changeEvent(@PathVariable int index, @RequestParam(required = false) String eventName, @RequestParam(required = false) String keyWord){
     HandleErrorOfAutowired();
     if(eventName != null){
       rsList.get(index-1).setEventName(eventName);
@@ -61,7 +61,7 @@ public class RsController {
     if(keyWord != null){
       rsList.get(index-1).setKeyWord(keyWord);
     }
-    return rsList.get(index-1);
+    return ResponseEntity.created(null).body(rsList.get(index-1));
   }
 
   @DeleteMapping("rs/delete/{index}")
