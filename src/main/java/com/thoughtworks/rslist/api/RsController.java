@@ -38,12 +38,12 @@ public class RsController {
     return ResponseEntity.ok(this.rsList.get(index - 1));
   }
 
-  @PutMapping("/rs/add")
+  @PostMapping("/rs/add")
   public ResponseEntity addEvent(@RequestBody @Valid RsEvent rsEvent){
     HandleErrorOfAutowired();
     rsList.add(rsEvent);
     putUserToUserList(rsEvent.getUser());
-    return ResponseEntity.ok().build();
+    return ResponseEntity.created(null).header("index", String.valueOf(rsList.size())).build();
   }
 
 
