@@ -86,7 +86,7 @@ class UserControllerTest {
     public void should_return_all_users_when_getUser() throws Exception {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].userName").value("lili"));
+                .andExpect(jsonPath("$[0].user_name").value("lili"));
     }
 
 }
