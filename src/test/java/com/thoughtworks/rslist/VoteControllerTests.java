@@ -66,4 +66,13 @@ public class VoteControllerTests {
                 .param("userId", String.valueOf(getUserDto1.getId())))
                 .andExpect(status().isCreated());
     }
+
+
+    @Test
+    public void should_return_bad_request_when_vote_give_over_vote() throws Exception {
+        mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+                .param("voteNum", "15")
+                .param("userId", String.valueOf(getUserDto1.getId())))
+                .andExpect(status().isBadRequest());
+    }
 }
