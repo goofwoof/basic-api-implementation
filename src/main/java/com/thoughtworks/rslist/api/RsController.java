@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.dto.RsEventDto;
+import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.exception.ErrorIndexException;
 import com.thoughtworks.rslist.exception.ErrorInputException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
@@ -55,8 +56,9 @@ public class RsController {
     if(!userRepository.findById(rsEvent.getUserId()).isPresent()){
       return ResponseEntity.badRequest().build();
     }
+    UserDto userDto = userRepository.findById(rsEvent.getUserId()).get();
     RsEventDto insertData = RsEventDto.builder().eventName(rsEvent.getEventName())
-            .keyWord(rsEvent.getKeyWord()).build();
+            .keyWord(rsEvent.getKeyWord()).userDtoRS(userDto).build();
     rsEventRepository.save(insertData);
     return ResponseEntity.created(null).build();
   }

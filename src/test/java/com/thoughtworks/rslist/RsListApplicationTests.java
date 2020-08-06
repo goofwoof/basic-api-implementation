@@ -45,7 +45,7 @@ class RsListApplicationTests {
                 .phone(user.getPhone()).build();
         userRepository.save(userDto);
         getUserDto = userRepository.findAll().get(0);
-        RsEventDto rsEventDto = RsEventDto.builder().eventName("第零条事件").keyWord("无标签").userDto(getUserDto).build();
+        RsEventDto rsEventDto = RsEventDto.builder().eventName("第零条事件").keyWord("无标签").userDtoRS(getUserDto).build();
         rsEventRepository.save(rsEventDto);
         getRsEventDto = rsEventRepository.findAll().iterator().next();
     }
