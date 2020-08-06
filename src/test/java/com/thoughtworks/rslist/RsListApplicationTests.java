@@ -54,17 +54,17 @@ class RsListApplicationTests {
     @Test
     @Order(0)
     void T0_shoud_return_bad_request_when_add_give_null_param() throws Exception {
-        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent(null, "无标签", getUserDto.getId()));
+        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent(null, "无标签", getUserDto.getId(), 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid param")));
-        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", null, getUserDto.getId()));
+        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", null, getUserDto.getId(), 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
-        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", "无标签", getUserDto.getId()+10));
+        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", "无标签", getUserDto.getId()+10, 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
-        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第三条事件", "无标签", getUserDto.getId()));
+        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第三条事件", "无标签", getUserDto.getId(), 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
     }
@@ -72,13 +72,13 @@ class RsListApplicationTests {
     @Test
     @Order(1)
     void T1_add_event() throws Exception {
-        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第一条事件", "无标签", getUserDto.getId()));
+        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第一条事件", "无标签", getUserDto.getId(), 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
-        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", "无标签", getUserDto.getId()));
+        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", "无标签", getUserDto.getId(), 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
-        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第三条事件", "无标签", getUserDto.getId()));
+        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第三条事件", "无标签", getUserDto.getId(), 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))
@@ -116,7 +116,7 @@ class RsListApplicationTests {
     @Test
     @Order(5)
     void T5_add_event() throws Exception {
-        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("猪肉涨价了", "经济", getUserDto.getId()));
+        String jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("猪肉涨价了", "经济", getUserDto.getId(), 0, 0));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
         mockMvc.perform(get("/rs/list"))

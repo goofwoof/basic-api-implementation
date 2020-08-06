@@ -25,8 +25,10 @@ public class RsEventDto {
     private String eventName;
     private String keyWord;
     @ManyToOne(targetEntity = UserDto.class)
+    @JoinColumn(name = "user_id")
     private UserDto userDtoRS;
 
-    @OneToMany(targetEntity = VoteDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "rsEventDto")
+    @OneToMany//(targetEntity = VoteDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "rsEventDto")
+    @JoinColumn(name = "rs_id")
     private List<VoteDto> voteDtoList;
 }

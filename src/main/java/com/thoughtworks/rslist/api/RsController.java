@@ -3,10 +3,12 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.dto.RsEventDto;
 import com.thoughtworks.rslist.dto.UserDto;
+import com.thoughtworks.rslist.dto.VoteDto;
 import com.thoughtworks.rslist.exception.ErrorIndexException;
 import com.thoughtworks.rslist.exception.ErrorInputException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,8 @@ public class RsController {
   private RsEventRepository rsEventRepository;
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private VoteRepository voteRepository;
 
   @GetMapping("/rs/list")
   public ResponseEntity getStringOfreList(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
@@ -44,8 +48,10 @@ public class RsController {
   public ResponseEntity getStringOfSelectedList(@PathVariable int index){
     try {
       RsEventDto rsEventDto = rsEventRepository.findById(index).get();
+
       return ResponseEntity.ok(RsEvent.builder().eventName(rsEventDto.getEventName())
-              .keyWord(rsEventDto.getKeyWord()).build());
+              .keyWord(rsEventDto.getKeyWord()).id(rsEventDto.getId())
+              .voteNum(rsEventDto.getVoteDtoList().stream().mapToInt(item -> item.getVoutNum()).sum()).build());
     }catch (Exception e){
       throw new ErrorIndexException();
     }

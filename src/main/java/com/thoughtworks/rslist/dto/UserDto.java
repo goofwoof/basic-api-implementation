@@ -32,9 +32,11 @@ public class UserDto {
     private String phone;
     private int voteNum;
 
-    @OneToMany(targetEntity = RsEventDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "userDtoRS")
+    @OneToMany(targetEntity = RsEventDto.class, cascade = {CascadeType.REMOVE})
+    @JoinColumn(name = "user_id")
     private List<RsEventDto> rsEventDtoList;
 
-    @OneToMany(targetEntity = VoteDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "userDtoVote")
+    @OneToMany(targetEntity = VoteDto.class, cascade = {CascadeType.REMOVE})
+    @JoinColumn(name = "user_id")
     private  List<VoteDto> voteDtoList;
 }

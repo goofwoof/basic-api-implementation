@@ -7,17 +7,17 @@ import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -67,12 +67,26 @@ public class VoteControllerTests {
                 .andExpect(status().isCreated());
     }
 
-
     @Test
     public void should_return_bad_request_when_vote_give_over_vote() throws Exception {
         mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
                 .param("voteNum", "15")
                 .param("userId", String.valueOf(getUserDto1.getId())))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(3)
+    public void shoud_return_event_with_votnum_when_get_event() throws Exception {
+        mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+                .param("voteNum", "5")
+                .param("userId", String.valueOf(getUserDto1.getId())))
+                .andExpect(status().isCreated());
+        mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.eventName").value("第零条事件"))
+                .andExpect(jsonPath("$.keyWord").value("无标签"))
+                .andExpect(jsonPath("$.id").value(getRsEventDto.getId()))
+                .andExpect(jsonPath("$.voteNum").value(5));
     }
 }

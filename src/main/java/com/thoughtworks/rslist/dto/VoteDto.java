@@ -27,11 +27,13 @@ public class VoteDto {
     private int id;
 
     @ManyToOne(targetEntity = RsEventDto.class)
+    @JoinColumn(name = "rs_id")
     private RsEventDto rsEventDto;
 
     private int voutNum;
 
     @ManyToOne(targetEntity = UserDto.class)
+    @JoinColumn(name = "user_id")
     private UserDto userDtoVote;
 
     @Column(name="voteTime",columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP",insertable = false,updatable = false)

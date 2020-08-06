@@ -38,7 +38,6 @@ public class VoteController {
         userDto.setVoteNum(userDto.getVoteNum()-voteNum);
         userRepository.save(userDto);
         RsEventDto rsEventDto = rsEventRepository.findById(rsEventId).get();
-
         VoteDto voteDto = VoteDto.builder().rsEventDto(rsEventDto).userDtoVote(userDto).voutNum(voteNum).build();
         voteRepository.save(voteDto);
         return ResponseEntity.created(null).build();

@@ -22,4 +22,8 @@ public class RsEvent {
     private String keyWord;
     @NotNull
     private int userId;
+
+    private int id;
+
+    private int voteNum;
 }
