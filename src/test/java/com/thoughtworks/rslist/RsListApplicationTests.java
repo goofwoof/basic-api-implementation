@@ -47,7 +47,7 @@ class RsListApplicationTests {
         getUserDto = userRepository.findAll().get(0);
         RsEventDto rsEventDto = RsEventDto.builder().eventName("第零条事件").keyWord("无标签").userDto(getUserDto).build();
         rsEventRepository.save(rsEventDto);
-        getRsEventDto = rsEventRepository.findAll().get(0);
+        getRsEventDto = rsEventRepository.findAll().iterator().next();
     }
 
 
@@ -59,6 +59,9 @@ class RsListApplicationTests {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid param")));
         jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", null, getUserDto.getId()));
+        mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isBadRequest());
+        jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第二条事件", "无标签", getUserDto.getId()+10));
         mockMvc.perform(post("/rs/add").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
         jsonParam = new ObjectMapper().writeValueAsString(new RsEvent("第三条事件", "无标签", getUserDto.getId()));
@@ -86,13 +89,12 @@ class RsListApplicationTests {
     @Test
     @Order(3)
     void T3_get_select_one_event() throws Exception {
-        mockMvc.perform(get("/rs/13"))
+        mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", not(null)))
                 .andExpect(jsonPath("$.eventName").value("第零条事件"))
                 .andExpect(jsonPath("$.keyWord").value("无标签"))
                 .andExpect(jsonPath("$", not(hasKey("userName"))));
-        mockMvc.perform(get("/rs/10"))
+        mockMvc.perform(get("/rs/"+(getRsEventDto.getId()+100)))//特意制作的错误ID
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error", is("invalid index")));
     }
@@ -102,7 +104,7 @@ class RsListApplicationTests {
     void T4_get_list_selected_enents() throws Exception {
         mockMvc.perform(get("/rs/list?start=0&end=1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].eventName").value("第一条事件"))
+                .andExpect(jsonPath("$[0].eventName").value("第零条事件"))
                 .andExpect(jsonPath("$[0].keyWord").value("无标签"));
 
         mockMvc.perform(get("/rs/list?start=10&end=20"))
@@ -125,15 +127,42 @@ class RsListApplicationTests {
     @Test
     @Order(6)
     void T6_chang_event() throws Exception {
-        mockMvc.perform(post("/rs/change/0")
+        mockMvc.perform(patch("/rs/change/"+getRsEventDto.getId())
                 .param("eventName", "特朗普辞职了")
                 .param("keyWord", "时政")
+                .param("userId",String.valueOf(getUserDto.getId()))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/rs/0"))
+        mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName").value("特朗普辞职了"))
                 .andExpect(jsonPath("$.keyWord").value("时政"));
+    }
+
+    @Test
+    @Order(6)
+    void should_return_bad_request_when_chang_give_error_user_id() throws Exception {
+        mockMvc.perform(patch("/rs/change/"+getRsEventDto.getId())
+                .param("eventName", "特朗普辞职了")
+                .param("userId","-1")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Order(6)
+    void should_chang_selected_when_chang_give_one_param() throws Exception {
+        mockMvc.perform(patch("/rs/change/"+getRsEventDto.getId())
+                .param("eventName", "特朗普辞职")
+                .param("keyWord", "时政")
+                .param("userId",String.valueOf(getUserDto.getId()))
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED))
+                .andExpect(status().isCreated());
+        mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.eventName").value("特朗普辞职"))
+                .andExpect(jsonPath("$.keyWord").value("时政"));
+
     }
 
     @Test

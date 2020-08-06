@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,10 @@ public class RsController {
 
   @GetMapping("/rs/list")
   public ResponseEntity getStringOfreList(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
-    List<RsEventDto> rsList = rsEventRepository.findAll();
+    List<RsEvent> rsList = new ArrayList<>();
+    rsEventRepository.findAll().forEach(rsEventDto ->
+      rsList.add(RsEvent.builder().eventName(rsEventDto.getEventName())
+      .keyWord(rsEventDto.getKeyWord()).build()));
     if(start != null || end != null){
       try{
         return ResponseEntity.ok(rsList.subList(start, end));
@@ -38,7 +42,9 @@ public class RsController {
   @GetMapping("/rs/{index}")
   public ResponseEntity getStringOfSelectedList(@PathVariable int index){
     try {
-      return ResponseEntity.ok(rsEventRepository.findById(index).get());
+      RsEventDto rsEventDto = rsEventRepository.findById(index).get();
+      return ResponseEntity.ok(RsEvent.builder().eventName(rsEventDto.getEventName())
+              .keyWord(rsEventDto.getKeyWord()).build());
     }catch (Exception e){
       throw new ErrorIndexException();
     }
@@ -56,8 +62,11 @@ public class RsController {
   }
 
 
-  @PostMapping("rs/change/{index}")
-  public ResponseEntity changeEvent(@PathVariable int index, @RequestParam(required = false) String eventName, @RequestParam(required = false) String keyWord){
+  @PatchMapping("rs/change/{index}")
+  public ResponseEntity changeEvent(@PathVariable int index, @RequestParam(required = false) String eventName, @RequestParam(required = false) String keyWord, @RequestParam Integer userId){
+    if(userId == null || !userRepository.findById(userId).isPresent()){
+      return ResponseEntity.badRequest().build();
+    }
     RsEventDto rsEventDto = RsEventDto.builder().id(index).eventName(eventName)
             .keyWord(keyWord).build();
     rsEventRepository.save(rsEventDto);
