@@ -1,35 +1,31 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.RsEvent;
-import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.dto.RsEventDto;
 import com.thoughtworks.rslist.exception.ErrorIndexException;
 import com.thoughtworks.rslist.exception.ErrorInputException;
+import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class RsController {
   @Autowired
-  private List<User> userList;
+  private RsEventRepository rsEventRepository;
   @Autowired
-  private List<RsEvent> rsList;
-
-  private void HandleErrorOfAutowired(){
-    userList = userList.stream().filter(User::isInitFunc).collect(Collectors.toList());
-    rsList = rsList.stream().filter(RsEvent::isInitFunc).collect(Collectors.toList());
-  }
+  private UserRepository userRepository;
 
   @GetMapping("/rs/list")
   public ResponseEntity getStringOfreList(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
-    HandleErrorOfAutowired();
+    List<RsEventDto> rsList = rsEventRepository.findAll();
     if(start != null || end != null){
       try{
-        return ResponseEntity.ok(rsList.subList(start - 1, end));
+        return ResponseEntity.ok(rsList.subList(start, end));
       }catch(IndexOutOfBoundsException e){
         throw new ErrorInputException();
       }
@@ -41,46 +37,37 @@ public class RsController {
 
   @GetMapping("/rs/{index}")
   public ResponseEntity getStringOfSelectedList(@PathVariable int index){
-    HandleErrorOfAutowired();
     try {
-      return ResponseEntity.ok(this.rsList.get(index - 1));
+      return ResponseEntity.ok(rsEventRepository.findById(index).get());
     }catch (Exception e){
       throw new ErrorIndexException();
     }
-
   }
 
   @PostMapping("/rs/add")
   public ResponseEntity addEvent(@RequestBody @Valid RsEvent rsEvent){
-    HandleErrorOfAutowired();
-    rsList.add(rsEvent);
-    putUserToUserList(rsEvent.getUser());
-    return ResponseEntity.created(null).header("index", String.valueOf(rsList.size())).build();
-  }
-
-
-  private void putUserToUserList(User user){
-    if(userList.stream().filter(oneUser-> oneUser.getUserName().equals(user.getUserName())).count() == 0){
-      userList.add(user);
+    if(!userRepository.findById(rsEvent.getUserId()).isPresent()){
+      return ResponseEntity.badRequest().build();
     }
+    RsEventDto insertData = RsEventDto.builder().eventName(rsEvent.getEventName())
+            .keyWord(rsEvent.getKeyWord()).build();
+    rsEventRepository.save(insertData);
+    return ResponseEntity.created(null).build();
   }
+
 
   @PostMapping("rs/change/{index}")
   public ResponseEntity changeEvent(@PathVariable int index, @RequestParam(required = false) String eventName, @RequestParam(required = false) String keyWord){
-    HandleErrorOfAutowired();
-    if(eventName != null){
-      rsList.get(index-1).setEventName(eventName);
-    }
-    if(keyWord != null){
-      rsList.get(index-1).setKeyWord(keyWord);
-    }
-    return ResponseEntity.created(null).body(rsList.get(index-1));
+    RsEventDto rsEventDto = RsEventDto.builder().id(index).eventName(eventName)
+            .keyWord(keyWord).build();
+    rsEventRepository.save(rsEventDto);
+    return ResponseEntity.created(null).build();
   }
 
   @DeleteMapping("rs/delete/{index}")
   public ResponseEntity deleteEvent(@PathVariable int index){
-    HandleErrorOfAutowired();
-    return ResponseEntity.ok(rsList.remove(index - 1));
+    rsEventRepository.deleteById(index);
+    return ResponseEntity.ok().build();
   }
 
 
