@@ -64,6 +64,9 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
+        mockMvc.perform(get("/get/user"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1));
     }
 
 
