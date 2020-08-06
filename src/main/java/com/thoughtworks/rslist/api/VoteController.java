@@ -1,5 +1,6 @@
 package com.thoughtworks.rslist.api;
 
+import com.thoughtworks.rslist.domain.Vote;
 import com.thoughtworks.rslist.dto.RsEventDto;
 import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.dto.VoteDto;
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -41,5 +48,15 @@ public class VoteController {
         VoteDto voteDto = VoteDto.builder().rsEventDto(rsEventDto).userDtoVote(userDto).voutNum(voteNum).build();
         voteRepository.save(voteDto);
         return ResponseEntity.created(null).build();
+    }
+
+    @PostMapping("/votes/time")
+    @Transactional
+    public ResponseEntity getVotesWithinTime(@RequestParam String start, String end){
+        List<Vote> voteList = voteRepository.findAll().stream()
+                .filter(voteDto -> voteDto.getVoteTime().getTime() > Timestamp.valueOf(end).getTime() || voteDto.getVoteTime().getTime() < Timestamp.valueOf(start).getTime())
+                .map(voteDto -> Vote.builder().rsEventId(voteDto.getRsEventDto().getId()).userId(voteDto.getUserDtoVote().getId())
+                    .voteNum(voteDto.getVoutNum()).voteTime(voteDto.getVoteTime().toString()).build()).collect(Collectors.toList());
+        return ResponseEntity.ok(voteList);
     }
 }

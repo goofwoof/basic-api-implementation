@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
-import java.sql.Timestamp;
 
 @Component
 @Builder
@@ -16,5 +15,5 @@ public class Vote {
     private int rsEventId;
     private int userId;
     private int voteNum;
-    private Timestamp voteTime;
+    private String voteTime;
 }

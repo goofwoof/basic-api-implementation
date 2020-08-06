@@ -14,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static org.hamcrest.Matchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -88,5 +91,28 @@ public class VoteControllerTests {
                 .andExpect(jsonPath("$.keyWord").value("无标签"))
                 .andExpect(jsonPath("$.id").value(getRsEventDto.getId()))
                 .andExpect(jsonPath("$.voteNum").value(5));
+    }
+
+    @Test
+    public void should_return_vote_when_get_vote_give_start_end_time() throws Exception {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String start = df.format(new Date());
+        String end = null;
+        for(int i = 0; i< 10; i++){
+            mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+                    .param("voteNum", "1")
+                    .param("userId", String.valueOf(getUserDto1.getId())))
+                    .andExpect(status().isCreated());
+            Thread.sleep(1000);
+            if(i == 6){
+                end = df.format(new Date());
+            }
+        }
+        mockMvc.perform(post("/votes/time")
+                .param("start", start)
+                .param("end", end))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(7)));
+
     }
 }
