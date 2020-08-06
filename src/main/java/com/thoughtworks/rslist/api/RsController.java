@@ -1,11 +1,89 @@
 package com.thoughtworks.rslist.api;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.thoughtworks.rslist.domain.RsEvent;
+import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.exception.ErrorIndexException;
+import com.thoughtworks.rslist.exception.ErrorInputException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class RsController {
-  private List<String> rsList = Arrays.asList("第一条事件", "第二条事件", "第三条事件");
+  @Autowired
+  private List<User> userList;
+  @Autowired
+  private List<RsEvent> rsList;
+
+  private void HandleErrorOfAutowired(){
+    userList = userList.stream().filter(User::isInitFunc).collect(Collectors.toList());
+    rsList = rsList.stream().filter(RsEvent::isInitFunc).collect(Collectors.toList());
+  }
+
+  @GetMapping("/rs/list")
+  public ResponseEntity getStringOfreList(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
+    HandleErrorOfAutowired();
+    if(start != null || end != null){
+      try{
+        return ResponseEntity.ok(rsList.subList(start - 1, end));
+      }catch(IndexOutOfBoundsException e){
+        throw new ErrorInputException();
+      }
+
+    }
+    return ResponseEntity.ok(rsList);
+  }
+
+
+  @GetMapping("/rs/{index}")
+  public ResponseEntity getStringOfSelectedList(@PathVariable int index){
+    HandleErrorOfAutowired();
+    try {
+      return ResponseEntity.ok(this.rsList.get(index - 1));
+    }catch (Exception e){
+      throw new ErrorIndexException();
+    }
+
+  }
+
+  @PostMapping("/rs/add")
+  public ResponseEntity addEvent(@RequestBody @Valid RsEvent rsEvent){
+    HandleErrorOfAutowired();
+    rsList.add(rsEvent);
+    putUserToUserList(rsEvent.getUser());
+    return ResponseEntity.created(null).header("index", String.valueOf(rsList.size())).build();
+  }
+
+
+  private void putUserToUserList(User user){
+    if(userList.stream().filter(oneUser-> oneUser.getUserName().equals(user.getUserName())).count() == 0){
+      userList.add(user);
+    }
+  }
+
+  @PostMapping("rs/change/{index}")
+  public ResponseEntity changeEvent(@PathVariable int index, @RequestParam(required = false) String eventName, @RequestParam(required = false) String keyWord){
+    HandleErrorOfAutowired();
+    if(eventName != null){
+      rsList.get(index-1).setEventName(eventName);
+    }
+    if(keyWord != null){
+      rsList.get(index-1).setKeyWord(keyWord);
+    }
+    return ResponseEntity.created(null).body(rsList.get(index-1));
+  }
+
+  @DeleteMapping("rs/delete/{index}")
+  public ResponseEntity deleteEvent(@PathVariable int index){
+    HandleErrorOfAutowired();
+    return ResponseEntity.ok(rsList.remove(index - 1));
+  }
+
+
+
+
 }
