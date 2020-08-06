@@ -2,7 +2,12 @@ package com.thoughtworks.rslist.dto;
 
 
 import com.thoughtworks.rslist.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +17,12 @@ import javax.validation.constraints.*;
 
 @Entity
 @Table(name = "user")
+@DynamicUpdate
+@DynamicInsert
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
     @Id
     private int id;
@@ -22,16 +32,4 @@ public class UserDto {
     private String email;
     private String phone;
     private int voteNum;
-
-    public UserDto(User user) {
-        this.age = user.getAge();
-        this.email = user.getEmail();
-        this.gender = user.getGender();
-        this.phone = user.getPhone();
-        this.voteNum = user.getVoteNum();
-        this.userName = user.getUserName();
-    }
-
-    public UserDto() {
-    }
 }

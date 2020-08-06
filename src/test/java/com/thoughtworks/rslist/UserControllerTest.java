@@ -1,11 +1,10 @@
 package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.User;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import com.thoughtworks.rslist.repository.UserRepository;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
+    @Autowired
+    UserRepository urp;
+
+    @BeforeEach
+    void setup(){
+        urp.deleteAll();
+    }
+
 
     @Test
     @Order(0)
@@ -99,7 +106,7 @@ class UserControllerTest {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
-        mockMvc.perform(delete("/user/delete/1"))
+        mockMvc.perform(post("/user/delete/0"))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
