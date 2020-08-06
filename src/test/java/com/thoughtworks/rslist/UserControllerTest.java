@@ -3,6 +3,7 @@ package com.thoughtworks.rslist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.User;
+import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,19 @@ class UserControllerTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
-    UserRepository urp;
+    UserRepository userRepository;
+
+    UserDto getUserDto;
 
     @BeforeEach
     void setup(){
-        urp.deleteAll();
+        userRepository.deleteAll();
+        User user = new User("lili", "male", 19, "a@a.com", "15029931111");
+        UserDto userDto = UserDto.builder().userName(user.getUserName())
+                .age(user.getAge()).email(user.getEmail()).gender(user.getGender())
+                .phone(user.getPhone()).build();
+        userRepository.save(userDto);
+        getUserDto = userRepository.findAll().get(0);
     }
 
 
@@ -96,7 +105,7 @@ class UserControllerTest {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userName").value("lili"));
-        mockMvc.perform(get("/get/user/0"))
+        mockMvc.perform(get("/get/user/"+getUserDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userName").value("lili"));
     }
@@ -106,7 +115,7 @@ class UserControllerTest {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
-        mockMvc.perform(post("/user/delete/0"))
+        mockMvc.perform(post("/user/delete/"+getUserDto.getId()))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())

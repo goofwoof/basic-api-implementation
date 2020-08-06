@@ -1,12 +1,17 @@
 package com.thoughtworks.rslist.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.*;
 
 
 @Component
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @NotNull
     @Size(max = 8, min = 1)
@@ -22,16 +27,6 @@ public class User {
     @Pattern(regexp = "1\\d{10}")
     private String phone;
     private int voteNum = 10;
-    private boolean initFunc = true;
-
-    //@JsonIgnore
-    public boolean isInitFunc() {
-        return initFunc;
-    }
-
-    public User() {
-        initFunc = false;
-    }
 
     public User(@NotNull @Size(max = 8, min = 1) String userName, @NotNull String gender, @NotNull @Min(18) @Max(100) int age, @Email String email, @Pattern(regexp = "1\\d{10}") String phone) {
         this.userName = userName;
