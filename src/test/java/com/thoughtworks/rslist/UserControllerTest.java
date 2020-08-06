@@ -33,7 +33,7 @@ class UserControllerTest {
     @BeforeEach
     void setup(){
         userRepository.deleteAll();
-        User user = new User("lili", "male", 19, "a@a.com", "15029931111");
+        User user = User.builder().userName("lilix").gender("male").age(19).email("a@a.com").phone("15029931111").build();
         UserDto userDto = UserDto.builder().userName(user.getUserName())
                 .age(user.getAge()).email(user.getEmail()).gender(user.getGender())
                 .phone(user.getPhone()).build();
@@ -45,7 +45,7 @@ class UserControllerTest {
     @Test
     @Order(0)
     public void should_register_user() throws Exception {
-        User user = new User("lili", "male", 19, "a@a.com", "15029931111");
+        User user = User.builder().userName("lili").gender("male").age(19).email("a@a.com").phone("15029931111").build();
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isCreated());
@@ -54,7 +54,7 @@ class UserControllerTest {
 
     @Test
     public void should_error_when_new_object_give_user_name_more_than_8() throws Exception {
-        User user = new User("lilililil", "male", 19, "a@a.com", "15029931111");
+        User user = User.builder().userName("lilililil").gender("male").age(19).email("a@a.com").phone("15029931111").build();
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
@@ -63,7 +63,7 @@ class UserControllerTest {
 
     @Test
     public void should_error_when_new_object_give_user_name_empty() throws Exception {
-        User user = new User("", "male", 19, "a@a.com", "15029931111");
+        User user = User.builder().gender("male").age(19).email("a@a.com").phone("15029931111").build();
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
@@ -71,7 +71,7 @@ class UserControllerTest {
 
     @Test
     public void should_error_when_new_object_give_user_name_null() throws Exception {
-        User user = new User(null, "male", 19, "a@a.com", "15029931111");
+        User user = User.builder().gender("male").age(19).email("a@a.com").phone("15029931111").build();
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
@@ -79,14 +79,14 @@ class UserControllerTest {
 
     @Test
     public void should_error_when_new_object_give_sge_not_between_18_100() throws Exception {
-        User user = new User("lili", "male", 17, "a@a.com", "15029931111");
+        User user = User.builder().userName("lili").gender("male").age(17).email("a@a.com").phone("15029931111").build();
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
     }
     @Test
     public void should_error_when_new_object_give_unsuitable_email() throws Exception {
-        User user = new User("lili", "male", 19, "aa.com", "15029931111");
+        User user = User.builder().userName("lili").gender("male").age(19).email("aa.com").phone("15029931111").build();
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
@@ -94,7 +94,7 @@ class UserControllerTest {
 
     @Test
     public void should_error_when_new_object_give_unsuitable_phone() throws Exception {
-        User user = new User("lili", "male", 19, "a@a.com", "150299");
+        User user = User.builder().userName("lili").gender("male").age(19).email("a@a.com").phone("150299").build();
         String jsonParam = new ObjectMapper().writeValueAsString(user);
         mockMvc.perform(post("/user").content(jsonParam).contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest());
@@ -104,10 +104,10 @@ class UserControllerTest {
     public void should_return_all_users_when_getUser() throws Exception {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].userName").value("lili"));
+                .andExpect(jsonPath("$[0].userName").value("lilix"));
         mockMvc.perform(get("/get/user/"+getUserDto.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userName").value("lili"));
+                .andExpect(jsonPath("$.userName").value("lilix"));
     }
 
     @Test

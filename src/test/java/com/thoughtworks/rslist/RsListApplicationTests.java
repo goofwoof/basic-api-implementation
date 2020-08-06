@@ -39,7 +39,7 @@ class RsListApplicationTests {
     void setup(){
         userRepository.deleteAll();
         rsEventRepository.deleteAll();
-        User user = new User("lili1", "male", 19, "a@a.com", "15029931111");
+        User user = User.builder().userName("lilix").gender("male").age(19).email("a@a.com").phone("150299311111").build();
         UserDto userDto = UserDto.builder().userName(user.getUserName())
                 .age(user.getAge()).email(user.getEmail()).gender(user.getGender())
                 .phone(user.getPhone()).build();

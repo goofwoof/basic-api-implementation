@@ -32,6 +32,9 @@ public class UserDto {
     private String phone;
     private int voteNum;
 
-    @OneToMany(targetEntity=RsEventDto.class, cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, mappedBy = "userDto")
+    @OneToMany(targetEntity = RsEventDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "userDtoRS")
     private List<RsEventDto> rsEventDtoList;
+
+    @OneToMany(targetEntity = VoteDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "userDtoVote")
+    private  List<VoteDto> voteDtoList;
 }

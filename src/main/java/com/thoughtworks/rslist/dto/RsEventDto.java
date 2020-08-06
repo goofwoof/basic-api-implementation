@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "rsEvent")
@@ -24,5 +25,8 @@ public class RsEventDto {
     private String eventName;
     private String keyWord;
     @ManyToOne(targetEntity = UserDto.class)
-    private UserDto userDto;
+    private UserDto userDtoRS;
+
+    @OneToMany(targetEntity = VoteDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "rsEventDto")
+    private List<VoteDto> voteDtoList;
 }
