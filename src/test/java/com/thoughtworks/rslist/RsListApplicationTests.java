@@ -101,7 +101,7 @@ class RsListApplicationTests {
     
     @Test
     @Order(4)
-    void T4_get_list_selected_enents() throws Exception {
+    void T4_get_list_selected_events() throws Exception {
         mockMvc.perform(get("/rs/list?start=0&end=1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].eventName").value("第零条事件"))

@@ -4,13 +4,16 @@ package com.thoughtworks.rslist.service;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.dto.RsEventDto;
 import com.thoughtworks.rslist.dto.UserDto;
+import com.thoughtworks.rslist.dto.VoteDto;
 import com.thoughtworks.rslist.exception.ErrorEmptyObjectException;
+import com.thoughtworks.rslist.exception.ErrorIndexException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RsService {
@@ -23,11 +26,18 @@ public class RsService {
 
 
     public List<RsEvent> getAllRsEvents() {
-        List<RsEvent> rsList = new ArrayList<>();
-        rsEventRepository.findAll().forEach(rsEventDto ->
-                rsList.add(RsEvent.builder().eventName(rsEventDto.getEventName())
-                        .keyWord(rsEventDto.getKeyWord()).build()));
-        return rsList;
+        return rsEventRepository.findAll().stream()
+                .map(rsEventDto -> revertRsEventDtoToRsEvent(rsEventDto))
+                .collect(Collectors.toList());
+    }
+
+    public RsEvent revertRsEventDtoToRsEvent(RsEventDto rsEventDto){
+        return RsEvent.builder().eventName(rsEventDto.getEventName())
+                .keyWord(rsEventDto.getKeyWord())
+                .voteNum(rsEventDto.getVoteDtoList().stream().mapToInt(VoteDto::getVoteNum).sum())
+                .userId(rsEventDto.getUserDtoRS().getId())
+                .id(rsEventDto.getId())
+                .build();
     }
 
     public List<RsEvent> getSubRsEvents(Integer start, Integer end) {
@@ -35,24 +45,22 @@ public class RsService {
     }
 
     public List<RsEventDto> getAllRsEventsDto() {
-        return (List<RsEventDto>) rsEventRepository.findAll();
+        return rsEventRepository.findAll();
     }
 
     public List<RsEventDto> getSubRsEventsDto(Integer start, Integer end) {
         return getAllRsEventsDto().subList(start,end);
     }
 
-    public RsEventDto getRsEventDtoById(int RsEventId) {
-        return rsEventRepository.findById(RsEventId).get();
+    public RsEventDto getRsEventDtoById(int rsEventId) {
+        if(!rsEventRepository.findById(rsEventId).isPresent()){
+            throw new ErrorIndexException("invalid index");
+        }
+        return rsEventRepository.findById(rsEventId).get();
     }
 
     public RsEvent getRsEventById(int RsEventId) {
-        RsEventDto rsEventDto = getRsEventDtoById(RsEventId);
-        return RsEvent.builder().eventName(rsEventDto.getEventName())
-                .keyWord(rsEventDto.getKeyWord())
-                .id(rsEventDto.getId())
-                .voteNum(rsEventDto.getVoteDtoList().stream().mapToInt(item -> item.getVoutNum()).sum())
-                        .build();
+        return revertRsEventDtoToRsEvent(getRsEventDtoById(RsEventId));
     }
 
     public void addNewReEvent(RsEvent rsEvent) {
@@ -65,7 +73,8 @@ public class RsService {
     public void changeReEvent(int RsEventId, String eventName, String keyWord, int userId) {
         UserDto userDto = userService.getUserDtoById(userId);
         RsEventDto rsEventDto = RsEventDto.builder().id(RsEventId).eventName(eventName)
-                .keyWord(keyWord).build();
+                .keyWord(keyWord)
+                .userDtoRS(userDto).build();
         rsEventRepository.save(rsEventDto);
     }
 

@@ -3,9 +3,9 @@ package com.thoughtworks.rslist.service;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.exception.ErrorEmptyObjectException;
+import com.thoughtworks.rslist.exception.ErrorInputException;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,18 +43,12 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
-        return getAllUsersDto().stream().map(userDto ->
-                User.builder().voteNum(userDto.getVoteNum())
-                        .userName(userDto.getUserName())
-                        .age(userDto.getAge())
-                        .email(userDto.getEmail())
-                        .gender(userDto.getGender())
-                        .phone(userDto.getPhone()).build())
+        return getAllUsersDto().stream()
+                .map(userDto ->revertUserDtoToUser(userDto))
                 .collect(Collectors.toList());
     }
 
-    public User getUserById(int userId) {
-        UserDto userDto = getUserDtoById(userId);
+    public User revertUserDtoToUser(UserDto userDto){
         return User.builder().voteNum(userDto.getVoteNum())
                 .userName(userDto.getUserName())
                 .age(userDto.getAge())
@@ -63,11 +57,32 @@ public class UserService {
                 .phone(userDto.getPhone()).build();
     }
 
+    public User getUserById(int userId) {
+        return revertUserDtoToUser(getUserDtoById(userId));
+    }
+
     public void deleteUserById(int userId) {
         try{
             userRepository.deleteById(userId);
         }catch (Exception e){
-            throw new Error("error userId");
+            throw new ErrorInputException("error userId");
         }
+    }
+
+    public UserDto checkVote(Integer voteNum, Integer userId) {
+        UserDto userDto = getUserDtoById(userId);
+        if(userDto.getVoteNum() < voteNum){
+            throw new ErrorInputException("over vote");
+        }
+        return userDto;
+    }
+
+    public void updateSeltected(UserDto userDto) {
+        try{
+            userRepository.save(userDto);
+        }catch(Exception e){
+            throw new ErrorInputException("update Error");
+        }
+
     }
 }

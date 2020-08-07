@@ -33,7 +33,7 @@ public class VoteDto {
     @JoinColumn(name = "rs_id")
     private RsEventDto rsEventDto;
 
-    private int voutNum;
+    private int voteNum;
 
     @ManyToOne(targetEntity = UserDto.class)
     @JoinColumn(name = "user_id")

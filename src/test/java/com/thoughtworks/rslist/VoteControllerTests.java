@@ -7,6 +7,7 @@ import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
+import com.thoughtworks.rslist.service.VoteService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,6 +40,9 @@ public class VoteControllerTests {
     UserDto getUserDto;
     UserDto getUserDto1;
     RsEventDto getRsEventDto;
+
+    @Autowired
+    VoteService voteService;
 
     @BeforeEach
     void setup(){
@@ -82,15 +86,19 @@ public class VoteControllerTests {
     @Order(3)
     public void shoud_return_event_with_votnum_when_get_event() throws Exception {
         mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
-                .param("voteNum", "5")
+                .param("voteNum", "2")
                 .param("userId", String.valueOf(getUserDto1.getId())))
                 .andExpect(status().isCreated());
+        /*mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+                .param("voteNum", "2")
+                .param("userId", String.valueOf(getUserDto1.getId())))
+                .andExpect(status().isCreated());*/
         mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName").value("第零条事件"))
                 .andExpect(jsonPath("$.keyWord").value("无标签"))
                 .andExpect(jsonPath("$.id").value(getRsEventDto.getId()))
-                .andExpect(jsonPath("$.voteNum").value(5));
+                .andExpect(jsonPath("$.voteNum").value(2));
     }
 
     @Test

@@ -31,7 +31,7 @@ public class RsController {
       try{
         return ResponseEntity.ok(rsService.getSubRsEvents(start, end));
       }catch(IndexOutOfBoundsException e){
-        throw new ErrorInputException();
+        throw new ErrorInputException("invalid request param");
       }
     }
     return ResponseEntity.ok(rsService.getAllRsEvents());
@@ -40,11 +40,7 @@ public class RsController {
 
   @GetMapping("/rs/{index}")
   public ResponseEntity getStringOfSelectedList(@PathVariable int index){
-    try {
-      return ResponseEntity.ok(rsService.getRsEventById(index));
-    }catch (Exception e){
-      throw new ErrorIndexException();
-    }
+    return ResponseEntity.ok(rsService.getRsEventById(index));
   }
 
   @PostMapping("/rs/add")
