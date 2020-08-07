@@ -25,7 +25,7 @@ public class RsController {
   @Autowired
   private VoteRepository voteRepository;
 
-  @GetMapping("/rs/list")
+  @GetMapping("/rss")
   public ResponseEntity getStringOfreList(@RequestParam(required = false) Integer start, @RequestParam(required = false) Integer end){
     if(start != null || end != null){
       try{
@@ -43,20 +43,20 @@ public class RsController {
     return ResponseEntity.ok(rsService.getRsEventById(index));
   }
 
-  @PostMapping("/rs/add")
+  @PostMapping("/rs")
   public ResponseEntity addEvent(@RequestBody @Valid RsEvent rsEvent){
     rsService.addNewReEvent(rsEvent);
     return ResponseEntity.created(null).build();
   }
 
 
-  @PatchMapping("rs/change/{index}")
+  @PatchMapping("rs/{index}")
   public ResponseEntity changeEvent(@PathVariable int index, @RequestParam(required = false) String eventName, @RequestParam(required = false) String keyWord, @RequestParam Integer userId){
     rsService.changeReEvent(index, eventName, keyWord, userId);
     return ResponseEntity.created(null).build();
   }
 
-  @DeleteMapping("rs/delete/{index}")
+  @DeleteMapping("rs/{index}")
   public ResponseEntity deleteEvent(@PathVariable int index){
     rsService.deleteReEvent(index);
     return ResponseEntity.ok().build();

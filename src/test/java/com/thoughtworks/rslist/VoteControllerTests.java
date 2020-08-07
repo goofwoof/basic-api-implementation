@@ -68,7 +68,7 @@ public class VoteControllerTests {
 
     @Test
     public void should_return_ok_when_vote_give_correct_info() throws Exception {
-        mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+        mockMvc.perform(post("/vote/"+getRsEventDto.getId())
                 .param("voteNum", "5")
                 .param("userId", String.valueOf(getUserDto1.getId())))
                 .andExpect(status().isCreated());
@@ -76,7 +76,7 @@ public class VoteControllerTests {
 
     @Test
     public void should_return_bad_request_when_vote_give_over_vote() throws Exception {
-        mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+        mockMvc.perform(post("/vote/"+getRsEventDto.getId())
                 .param("voteNum", "15")
                 .param("userId", String.valueOf(getUserDto1.getId())))
                 .andExpect(status().isBadRequest());
@@ -85,14 +85,10 @@ public class VoteControllerTests {
     @Test
     @Order(3)
     public void shoud_return_event_with_votnum_when_get_event() throws Exception {
-        mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+        mockMvc.perform(post("/vote/"+getRsEventDto.getId())
                 .param("voteNum", "2")
                 .param("userId", String.valueOf(getUserDto1.getId())))
                 .andExpect(status().isCreated());
-        /*mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
-                .param("voteNum", "2")
-                .param("userId", String.valueOf(getUserDto1.getId())))
-                .andExpect(status().isCreated());*/
         mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName").value("第零条事件"))
@@ -108,7 +104,7 @@ public class VoteControllerTests {
         String end = null;
         for(int i = 0; i< 10; i++){
             Thread.sleep(1000);
-            mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
+            mockMvc.perform(post("/vote/"+getRsEventDto.getId())
                     .param("voteNum", "1")
                     .param("userId", String.valueOf(getUserDto1.getId())))
                     .andExpect(status().isCreated());
@@ -117,16 +113,16 @@ public class VoteControllerTests {
                 end = df.format(new Date());
             }
         }
-        mockMvc.perform(post("/votes/time")
+        mockMvc.perform(get("/votes/withintime")
                 .param("start", start)
                 .param("end", end))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(7)));
-        mockMvc.perform(post("/votes")
+        mockMvc.perform(get("/votes")
                 .param("pageIndex", "1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(6)));
-        mockMvc.perform(post("/votes")
+        mockMvc.perform(get("/votes")
                 .param("pageIndex", "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(4)));

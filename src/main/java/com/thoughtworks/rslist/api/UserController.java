@@ -1,8 +1,6 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.domain.User;
-import com.thoughtworks.rslist.dto.UserDto;
-import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +24,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @GetMapping("/get/user/{index}")
+    @GetMapping("/user/{index}")
     public ResponseEntity getUser(@PathVariable int index){
         return ResponseEntity.ok(userService.getUserById(index));
     }
 
-    @PostMapping("/user/delete/{index}")
+    @DeleteMapping("/user/{index}")
     public ResponseEntity deleteUser(@PathVariable int index){
         userService.deleteUserById(index);
         return ResponseEntity.ok(userService.getAllUsers());

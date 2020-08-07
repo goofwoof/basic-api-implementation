@@ -38,7 +38,7 @@ public class ExceptionHandle{
         switch (path){
             case "/user":
                 return "invalid user";
-            case "/rs/add":
+            case "/rs":
                 return "invalid param";
         }
         return path;

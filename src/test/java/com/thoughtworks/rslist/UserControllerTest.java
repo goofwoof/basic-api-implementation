@@ -1,7 +1,6 @@
 package com.thoughtworks.rslist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.domain.User;
 import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.repository.UserRepository;
@@ -105,7 +104,7 @@ class UserControllerTest {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].userName").value("lilix"));
-        mockMvc.perform(get("/get/user/"+getUserDto.getId()))
+        mockMvc.perform(get("/user/"+getUserDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userName").value("lilix"));
     }
@@ -115,7 +114,7 @@ class UserControllerTest {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
-        mockMvc.perform(post("/user/delete/"+getUserDto.getId()))
+        mockMvc.perform(delete("/user/"+getUserDto.getId()))
                 .andExpect(status().isOk());
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
