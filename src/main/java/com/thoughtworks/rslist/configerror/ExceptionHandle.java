@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.configerror;
 
 
 import com.thoughtworks.rslist.exception.Error;
+import com.thoughtworks.rslist.exception.ErrorEmptyObjectException;
 import com.thoughtworks.rslist.exception.ErrorIndexException;
 import com.thoughtworks.rslist.exception.ErrorInputException;
 import org.slf4j.Logger;
@@ -18,7 +19,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class ExceptionHandle{
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandle.class);
 
-    @ExceptionHandler({ErrorIndexException.class, ErrorInputException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler({ErrorIndexException.class, ErrorInputException.class
+            , MethodArgumentNotValidException.class, ErrorEmptyObjectException.class})
     public ResponseEntity handlerInputException(Exception e) {
         Error er = new Error();
         if(e instanceof MethodArgumentNotValidException){
@@ -28,7 +30,6 @@ public class ExceptionHandle{
             er.setError(e.getMessage());
         }
         LOGGER.error(e.getMessage());
-        //.header("error", er.getError())
         return ResponseEntity.badRequest().body(er);
     }
 
