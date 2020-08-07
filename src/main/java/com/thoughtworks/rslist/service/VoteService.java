@@ -9,7 +9,6 @@ import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,13 +44,13 @@ public class VoteService {
 
     public List<Vote> getVotesWithinTime(String start, String end) {
         return getVoteDtosWithinTime(start, end)
-                .stream().map(voteDto -> revertVoteDtoToVote(voteDto))
+                .stream().map(this::revertVoteDtoToVote)
                 .collect(Collectors.toList());
     }
 
     public List<Vote> getVotesByPage(Integer pageIndex) {
         return getVoteDtosByPage(pageIndex)
-                .stream().map(voteDto -> revertVoteDtoToVote(voteDto))
+                .stream().map(this::revertVoteDtoToVote)
                 .collect(Collectors.toList());
 
     }

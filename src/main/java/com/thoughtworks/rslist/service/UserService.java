@@ -44,7 +44,7 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return getAllUsersDto().stream()
-                .map(userDto ->revertUserDtoToUser(userDto))
+                .map(this::revertUserDtoToUser)
                 .collect(Collectors.toList());
     }
 

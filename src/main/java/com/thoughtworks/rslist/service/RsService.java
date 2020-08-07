@@ -5,13 +5,10 @@ import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.dto.RsEventDto;
 import com.thoughtworks.rslist.dto.UserDto;
 import com.thoughtworks.rslist.dto.VoteDto;
-import com.thoughtworks.rslist.exception.ErrorEmptyObjectException;
 import com.thoughtworks.rslist.exception.ErrorIndexException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +24,7 @@ public class RsService {
 
     public List<RsEvent> getAllRsEvents() {
         return rsEventRepository.findAll().stream()
-                .map(rsEventDto -> revertRsEventDtoToRsEvent(rsEventDto))
+                .map(this::revertRsEventDtoToRsEvent)
                 .collect(Collectors.toList());
     }
 
