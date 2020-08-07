@@ -99,12 +99,13 @@ public class VoteControllerTests {
         String start = df.format(new Date());
         String end = null;
         for(int i = 0; i< 10; i++){
+            Thread.sleep(1000);
             mockMvc.perform(post("/rs/vote/"+getRsEventDto.getId())
                     .param("voteNum", "1")
                     .param("userId", String.valueOf(getUserDto1.getId())))
                     .andExpect(status().isCreated());
-            Thread.sleep(1000);
             if(i == 6){
+                Thread.sleep(1000);
                 end = df.format(new Date());
             }
         }
@@ -113,6 +114,13 @@ public class VoteControllerTests {
                 .param("end", end))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(7)));
-
+        mockMvc.perform(post("/votes")
+                .param("pageIndex", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(6)));
+        mockMvc.perform(post("/votes")
+                .param("pageIndex", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)));
     }
 }
