@@ -32,7 +32,7 @@ public class RsEventDto {
     @JoinColumn(name = "user_id")
     private UserDto userDtoRS;
 
-    @OneToMany//(targetEntity = VoteDto.class, cascade = {CascadeType.REMOVE}, mappedBy = "rsEventDto")
+    @OneToMany(targetEntity = VoteDto.class)
     @JoinColumn(name = "rs_id")
     private List<VoteDto> voteDtoList;
 }

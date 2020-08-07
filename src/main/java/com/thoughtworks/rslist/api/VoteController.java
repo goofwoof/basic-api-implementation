@@ -7,9 +7,7 @@ import com.thoughtworks.rslist.dto.VoteDto;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
-import com.thoughtworks.rslist.repository.WiselyRepository.Range;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,16 +53,9 @@ public class VoteController {
     @PostMapping("/votes/time")
     @Transactional
     public ResponseEntity getVotesWithinTime(@RequestParam String start, String end){
-
-        List<Range<VoteDto>> ranges = new ArrayList();
-        Range<VoteDto> voteDtoRangeStart = new Range<VoteDto>("voteTime", Timestamp.valueOf(start), Timestamp.valueOf(end));
-        ranges.add(voteDtoRangeStart);
-        List<VoteDto> page = voteRepository.queryByExampleWithRange(Example.of(new VoteDto()), ranges);
-
-        List<Vote> voteList = voteRepository.findAll().stream()
-                .filter(voteDto -> voteDto.getVoteTime().before(Timestamp.valueOf(end)) && voteDto.getVoteTime().after(Timestamp.valueOf(start)))
+        List<Vote> voteList = voteRepository.findAllByVoteTimeBetween(Timestamp.valueOf(start), Timestamp.valueOf(end)).stream()
                 .map(voteDto -> Vote.builder().rsEventId(voteDto.getRsEventDto().getId()).userId(voteDto.getUserDtoVote().getId())
-                    .voteNum(voteDto.getVoutNum()).voteTime(voteDto.getVoteTime().toString()).build()).collect(Collectors.toList());
+                        .voteNum(voteDto.getVoutNum()).voteTime(voteDto.getVoteTime().toString()).build()).collect(Collectors.toList());
         return ResponseEntity.ok(voteList);
     }
 

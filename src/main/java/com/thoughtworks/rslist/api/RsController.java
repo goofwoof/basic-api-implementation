@@ -3,7 +3,6 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.domain.RsEvent;
 import com.thoughtworks.rslist.dto.RsEventDto;
 import com.thoughtworks.rslist.dto.UserDto;
-import com.thoughtworks.rslist.dto.VoteDto;
 import com.thoughtworks.rslist.exception.ErrorIndexException;
 import com.thoughtworks.rslist.exception.ErrorInputException;
 import com.thoughtworks.rslist.repository.RsEventRepository;

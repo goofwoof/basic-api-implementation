@@ -1,17 +1,22 @@
 package com.thoughtworks.rslist.repository;
 
 import com.thoughtworks.rslist.dto.VoteDto;
-import com.thoughtworks.rslist.repository.WiselyRepository.WiselyRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
+import org.hibernate.mapping.Collection;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
+
+import java.sql.Timestamp;
 import java.util.List;
 
-public interface VoteRepository extends WiselyRepository<VoteDto, Integer> {
+public interface VoteRepository extends CrudRepository<VoteDto, Integer> {
     @Override
     List<VoteDto> findAll();
 
-    @Override
-    Page<VoteDto> findAll(Pageable pageable);
+    List<VoteDto> findAll(Pageable pageable);
+
+    List<VoteDto> findAllByVoteTimeIn(List<Timestamp> times);
+
+    List<VoteDto> findAllByVoteTimeBetween(Timestamp start, Timestamp end);
 
 }

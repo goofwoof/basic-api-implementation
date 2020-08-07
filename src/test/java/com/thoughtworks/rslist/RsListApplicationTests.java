@@ -174,5 +174,16 @@ class RsListApplicationTests {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    @Order(7)
+    void shoulde_return_empty_re_when_delete_user() throws Exception {
+        mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/user/delete/"+getUserDto.getId()))
+                .andExpect(status().isOk());
+        mockMvc.perform(get("/rs/"+getRsEventDto.getId()))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
